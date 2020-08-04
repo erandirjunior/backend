@@ -2,6 +2,12 @@
 
 namespace SRC\Domain\Client;
 
+use SRC\Domain\Client\Interfaces\ClientBoundery;
+use SRC\Domain\Client\Interfaces\ClientCreateRepository;
+use SRC\Domain\Client\Interfaces\ClientValidator;
+use SRC\Domain\Client\Interfaces\ContactCreateRepository;
+use SRC\Domain\Client\Interfaces\Response;
+
 class ClientCreateHandler
 {
     private $boundery;
@@ -12,17 +18,21 @@ class ClientCreateHandler
 
     private $response;
 
+    private $contactRepository;
+
     public function __construct(
         ClientBoundery $clientBoundery,
         ClientCreateRepository $clientCreateRepository,
         ClientValidator $clientValidator,
-        Response $response
+        Response $response,
+        ContactCreateRepository $contactCreateRepository
     )
     {
         $this->boundery = $clientBoundery;
         $this->repository = $clientCreateRepository;
         $this->validator = $clientValidator;
         $this->response = $response;
+        $this->contactRepository = $contactCreateRepository;
     }
 
     public function create()
@@ -58,10 +68,12 @@ class ClientCreateHandler
     {
         $id = $this->repository->create($this->boundery);
 
-        $this->setResponse([], 201);
+        $this->setResponse(['Houve um erro ao cadastrar o cliente'], 500);
 
-        if (!$id) {
-            $this->setResponse(['Houve um erro ao cadastrar o cliente'], 500);
+        if ($id) {
+            $this->setResponse([], 201);
+            (new ContactCreateHandler($this->contactRepository))
+                ->create($id, $this->boundery->getContacts());
         }
     }
 

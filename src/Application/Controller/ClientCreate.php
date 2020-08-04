@@ -7,8 +7,9 @@ use SRC\Application\Boundery\Client;
 use SRC\Application\Presenter\JsonPresenter;
 use SRC\Application\Response\Response;
 use SRC\Domain\Client\ClientCreateHandler;
-use SRC\Domain\Client\ClientCreateRepository;
-use SRC\Domain\Client\ClientValidator;
+use SRC\Domain\Client\Interfaces\ClientCreateRepository;
+use SRC\Domain\Client\Interfaces\ClientValidator;
+use SRC\Domain\Client\Interfaces\ContactCreateRepository;
 
 class ClientCreate
 {
@@ -18,15 +19,19 @@ class ClientCreate
 
     private $repository;
 
+    private $contactRepository;
+
     public function __construct(
         Request $request,
         ClientValidator $clientValidator,
-        ClientCreateRepository $clientCreateRepository
+        ClientCreateRepository $clientCreateRepository,
+        ContactCreateRepository $contactCreateRepository
     )
     {
         $this->request = $request;
         $this->validator = $clientValidator;
         $this->repository = $clientCreateRepository;
+        $this->contactRepository = $contactCreateRepository;
     }
 
     public function create()
@@ -39,7 +44,14 @@ class ClientCreate
         $client     = new Client($name, $typePerson, $identifier, $contacts);
         $response   = new Response();
 
-        $domain = new ClientCreateHandler($client, $this->repository, $this->validator, $response);
+        $domain = new ClientCreateHandler(
+            $client,
+            $this->repository,
+            $this->validator,
+            $response,
+            $this->contactRepository
+        );
+
         $domain->create();
 
         echo (new JsonPresenter())->json($response->getBody(), $response->getCode());
