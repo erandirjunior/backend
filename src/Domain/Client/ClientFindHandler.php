@@ -2,6 +2,9 @@
 
 namespace SRC\Domain\Client;
 
+use SRC\Domain\Client\Interfaces\ClientFindRepository;
+use SRC\Domain\Client\Interfaces\Response;
+
 class ClientFindHandler
 {
     private $repository;

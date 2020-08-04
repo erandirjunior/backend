@@ -6,7 +6,7 @@ use PlugRoute\Http\Request;
 use SRC\Application\Presenter\JsonPresenter;
 use SRC\Application\Response\Response;
 use SRC\Domain\Client\ClientFindHandler;
-use SRC\Domain\Client\ClientFindRepository;
+use SRC\Domain\Client\Interfaces\ClientFindRepository;
 
 class ClientFind
 {
