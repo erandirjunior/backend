@@ -2,7 +2,7 @@
 
 namespace SRC\Infrastructure\Validator;
 
-class ClientValidator implements \SRC\Domain\Client\ClientValidator
+class ClientValidator implements \SRC\Domain\Client\Interfaces\ClientValidator
 {
     private $errors;
 
@@ -11,7 +11,7 @@ class ClientValidator implements \SRC\Domain\Client\ClientValidator
         $this->errors = [];
     }
 
-    public function validate(\SRC\Domain\Client\ClientBoundery $clientBoundery): bool
+    public function validate(\SRC\Domain\Client\Interfaces\ClientBoundery $clientBoundery): bool
     {
         if (empty($clientBoundery->getName())) {
             $this->errors[] = 'Campo nome não pode ser vazio';

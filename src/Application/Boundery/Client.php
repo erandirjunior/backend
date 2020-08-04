@@ -2,7 +2,7 @@
 
 namespace SRC\Application\Boundery;
 
-class Client implements \SRC\Domain\Client\ClientBoundery
+class Client implements \SRC\Domain\Client\Interfaces\ClientBoundery
 {
     private $name;
     private $typePerson;

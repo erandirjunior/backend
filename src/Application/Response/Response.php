@@ -2,7 +2,7 @@
 
 namespace SRC\Application\Response;
 
-class Response implements \SRC\Domain\Client\Response
+class Response implements \SRC\Domain\Client\Interfaces\Response
 {
     private $body;
 

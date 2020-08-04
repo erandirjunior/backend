@@ -4,11 +4,16 @@ $clientRepository = new \SRC\Infrastructure\Repository\ClientRepository(
     (new \SRC\Infrastructure\Database\Connection())->getConnection()
 );
 
+$contactRepository = new \SRC\Infrastructure\Repository\ContactRepository(
+    (new \SRC\Infrastructure\Database\Connection())->getConnection()
+);
+
 return [
-    \SRC\Domain\Client\ClientCreateRepository::class => $clientRepository,
-    \SRC\Domain\Client\ClientFindAllRepository::class => $clientRepository,
-    \SRC\Domain\Client\ClientFindRepository::class => $clientRepository,
-    \SRC\Domain\Client\ClientDeleteRepository::class => $clientRepository,
-    \SRC\Domain\Client\ClientUpdateRepository::class => $clientRepository,
-    \SRC\Domain\Client\ClientValidator::class => new \SRC\Infrastructure\Validator\ClientValidator()
+    \SRC\Domain\Client\Interfaces\ClientCreateRepository::class => $clientRepository,
+    \SRC\Domain\Client\Interfaces\ClientFindAllRepository::class => $clientRepository,
+    \SRC\Domain\Client\Interfaces\ClientFindRepository::class => $clientRepository,
+    \SRC\Domain\Client\Interfaces\ClientDeleteRepository::class => $clientRepository,
+    \SRC\Domain\Client\Interfaces\ClientUpdateRepository::class => $clientRepository,
+    \SRC\Domain\Client\Interfaces\ContactCreateRepository::class => $contactRepository,
+    \SRC\Domain\Client\Interfaces\ClientValidator::class => new \SRC\Infrastructure\Validator\ClientValidator()
 ];
