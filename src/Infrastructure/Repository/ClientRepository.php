@@ -2,12 +2,13 @@
 
 namespace SRC\Infrastructure\Repository;
 
-use SRC\Domain\Client\ClientDeleteRepository;
-use SRC\Domain\Client\ClientFindAllRepository;
-use SRC\Domain\Client\ClientFindRepository;
+use SRC\Domain\Client\Interfaces\ClientCreateRepository;
+use SRC\Domain\Client\Interfaces\ClientDeleteRepository;
+use SRC\Domain\Client\Interfaces\ClientFindAllRepository;
+use SRC\Domain\Client\Interfaces\ClientFindRepository;
 
 class ClientRepository implements
-    \SRC\Domain\Client\ClientCreateRepository,
+    ClientCreateRepository,
     ClientFindAllRepository,
     ClientFindRepository,
     ClientDeleteRepository
@@ -19,7 +20,7 @@ class ClientRepository implements
         $this->connection = $pdo;
     }
 
-    public function create(\SRC\Domain\Client\ClientBoundery $clientBoundery): bool
+    public function create(\SRC\Domain\Client\Interfaces\ClientBoundery $clientBoundery): int
     {
         $stmt = $this->connection->prepare("INSERT INTO client (name, type, identifier) VALUE (?, ?, ?)");
         $stmt->bindValue(1, $clientBoundery->getName());
@@ -39,7 +40,15 @@ class ClientRepository implements
 
     public function findAll(): array
     {
-        $stmt = $this->connection->query("SELECT name, id, name, type, identifier FROM client WHERE deleted_at IS NULL");
+        $stmt = $this->connection->query("SELECT
+                                            name,
+                                            id,
+                                            type,
+                                            identifier
+                                        FROM
+                                            client
+                                        WHERE
+                                            deleted_at IS NULL");
 
 
         return $stmt->execute() ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
@@ -48,19 +57,34 @@ class ClientRepository implements
     public function findById($id): array
     {
         $stmt = $this->connection->prepare("SELECT
-                                                name,
-                                                id,
-                                                name,
-                                                type,
-                                                identifier
-                                            FROM
-                                                client
-                                            WHERE
-                                                deleted_at IS NULL AND
-                                                id = ?");
+                                            C.name,
+                                            C.id,
+                                            C.type as typePerson,
+                                            C.identifier,
+                                            CT.type,
+                                            CT.contact
+                                        FROM
+                                            client C
+                                            LEFT JOIN contact CT ON CT.client_id = C.id AND CT.deleted_at IS NULL
+                                        WHERE
+                                            C.deleted_at IS NULL AND
+                                            C.id = ?");
         $stmt->bindValue(1, $id);
+        $stmt->execute();
+        $data = [];
 
-        return $stmt->execute() ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+            $data['name'] = $row['name'];
+            $data['identifier'] = $row['identifier'];
+            $data['id'] = $row['id'];
+            $data['typePerson'] = $row['typePerson'];
+            $data['contact'][] = [
+                'type' => $row['type'],
+                'contact' => $row['contact'],
+            ];
+        }
+
+        return $data;
     }
 
     public function delete($id): bool
