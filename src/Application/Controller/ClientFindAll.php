@@ -5,7 +5,7 @@ namespace SRC\Application\Controller;
 use SRC\Application\Presenter\JsonPresenter;
 use SRC\Application\Response\Response;
 use SRC\Domain\Client\ClientFindAllHandler;
-use SRC\Domain\Client\ClientFindAllRepository;
+use SRC\Domain\Client\Interfaces\ClientFindAllRepository;
 
 class ClientFindAll
 {
