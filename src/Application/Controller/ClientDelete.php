@@ -6,7 +6,7 @@ use PlugRoute\Http\Request;
 use SRC\Application\Presenter\JsonPresenter;
 use SRC\Application\Response\Response;
 use SRC\Domain\Client\ClientDeleteHandler;
-use SRC\Domain\Client\ClientDeleteRepository;
+use SRC\Domain\Client\Interfaces\ClientDeleteRepository;
 
 class ClientDelete
 {

@@ -2,6 +2,9 @@
 
 namespace SRC\Domain\Client;
 
+use SRC\Domain\Client\Interfaces\ClientDeleteRepository;
+use SRC\Domain\Client\Interfaces\Response;
+
 class ClientDeleteHandler
 {
     private $repository;
