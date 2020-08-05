@@ -17,7 +17,7 @@ $route->group(['prefix' => '/', 'namespace' => 'SRC\Application\Controller'], fu
 
     $route->post('clients', '\\ClientCreate@create');
 
-    $route->put('clients/{id:\d+}', '');
+    $route->put('clients/{id:\d+}', '\\ClientUpdate@update');
 
     $route->delete('clients/{id:\d+}', '\\ClientDelete@delete');
 

@@ -13,10 +13,8 @@ class ContactCreateHandler
         $this->repository = $repository;
     }
 
-    public function create($clientId, $data)
+    public function create($clientId, $contact)
     {
-        foreach ($data as $contact) {
-            $this->repository->create($clientId, $contact);
-        }
+        return $this->repository->create($clientId, $contact);
     }
 }

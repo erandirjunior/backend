@@ -3,8 +3,10 @@
 namespace SRC\Infrastructure\Repository;
 
 use SRC\Domain\Client\Interfaces\ContactCreateRepository;
+use SRC\Domain\Client\Interfaces\ContactDeleteRepository;
+use SRC\Domain\Client\Interfaces\ContactUpdateRepository;
 
-class ContactRepository implements ContactCreateRepository
+class ContactRepository implements ContactCreateRepository, ContactUpdateRepository, ContactDeleteRepository
 {
     private $connection;
 
@@ -13,7 +15,7 @@ class ContactRepository implements ContactCreateRepository
         $this->connection = $pdo;
     }
 
-    public function create($clientId, $data): bool
+    public function create($clientId, $data): int
     {
         $stmt = $this->connection->prepare("INSERT INTO contact (client_id, type, contact) VALUE (?, ?, ?)");
         $stmt->bindValue(1, $clientId);
@@ -57,11 +59,28 @@ class ContactRepository implements ContactCreateRepository
         return $stmt->execute() ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
     }
 
-    public function delete($id): bool
+    public function delete(int $clientId, string $ids): bool
     {
-        $stmt = $this->connection->prepare("UPDATE client SET deleted_at = NOW() WHERE id = ?");
-        $stmt->bindValue(1, $id);
+        $stmt = $this->connection->prepare("UPDATE
+                                                contact
+                                            SET
+                                                deleted_at = NOW()
+                                            WHERE
+                                                id NOT IN ({$ids}) AND
+                                                client_id = ?");
+        $stmt->bindValue(1, $clientId);
 
-        return $stmt->execute() ? true : false;
+        return $stmt->execute() ? 1 : 0;
+    }
+
+    public function update($clientId, array $data): bool
+    {
+        $stmt = $this->connection->prepare("UPDATE contact SET type = ?, contact = ?, updated_at = NOW() WHERE id = ? AND client_id = ?");
+        $stmt->bindValue(1, $data['type']);
+        $stmt->bindValue(2, $data['contact']);
+        $stmt->bindValue(3, $data['id']);
+        $stmt->bindValue(4, $clientId);
+
+        return $stmt->execute() ? 1 : 0;
     }
 }

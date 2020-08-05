@@ -2,16 +2,19 @@
 
 namespace SRC\Infrastructure\Repository;
 
+use SRC\Domain\Client\Interfaces\ClientBoundery;
 use SRC\Domain\Client\Interfaces\ClientCreateRepository;
 use SRC\Domain\Client\Interfaces\ClientDeleteRepository;
 use SRC\Domain\Client\Interfaces\ClientFindAllRepository;
 use SRC\Domain\Client\Interfaces\ClientFindRepository;
+use SRC\Domain\Client\Interfaces\ClientUpdateRepository;
 
 class ClientRepository implements
     ClientCreateRepository,
     ClientFindAllRepository,
     ClientFindRepository,
-    ClientDeleteRepository
+    ClientDeleteRepository,
+    ClientUpdateRepository
 {
     private $connection;
 
@@ -62,7 +65,8 @@ class ClientRepository implements
                                             C.type as typePerson,
                                             C.identifier,
                                             CT.type,
-                                            CT.contact
+                                            CT.contact,
+                                            CT.id as contactId
                                         FROM
                                             client C
                                             LEFT JOIN contact CT ON CT.client_id = C.id AND CT.deleted_at IS NULL
@@ -80,6 +84,7 @@ class ClientRepository implements
             $data['typePerson'] = $row['typePerson'];
             $data['contact'][] = [
                 'type' => $row['type'],
+                'id' => $row['contactId'],
                 'contact' => $row['contact'],
             ];
         }
@@ -93,5 +98,33 @@ class ClientRepository implements
         $stmt->bindValue(1, $id);
 
         return $stmt->execute() ? true : false;
+    }
+
+    public function update(int $id, ClientBoundery $clientBoundery): bool
+    {
+        $stmt = $this->connection->prepare("UPDATE
+                                                client
+                                            SET
+                                                name = ?,
+                                                type = ?,
+                                                identifier = ?,
+                                                updated_at = NOW()
+                                            WHERE
+                                                id = ?");
+        $stmt->bindValue(1, $clientBoundery->getName());
+        $stmt->bindValue(2, $clientBoundery->getTypePerson());
+        $stmt->bindValue(3, $clientBoundery->getIdentifier());
+        $stmt->bindValue(4, $id);
+
+        return $stmt->execute() ? 1 : 0;
+    }
+
+    public function checkIfHasOtherClientWithTheSameIdentifier(int $id, string $identifier): bool
+    {
+        $stmt = $this->connection->prepare("SELECT id FROM client WHERE identifier = ? AND id != ? AND deleted_at IS NULL");
+        $stmt->bindValue(1, $identifier);
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+        return !!$stmt->fetch();
     }
 }

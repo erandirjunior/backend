@@ -15,5 +15,7 @@ return [
     \SRC\Domain\Client\Interfaces\ClientDeleteRepository::class => $clientRepository,
     \SRC\Domain\Client\Interfaces\ClientUpdateRepository::class => $clientRepository,
     \SRC\Domain\Client\Interfaces\ContactCreateRepository::class => $contactRepository,
+    \SRC\Domain\Client\Interfaces\ContactUpdateRepository::class => $contactRepository,
+    \SRC\Domain\Client\Interfaces\ContactDeleteRepository::class => $contactRepository,
     \SRC\Domain\Client\Interfaces\ClientValidator::class => new \SRC\Infrastructure\Validator\ClientValidator()
 ];

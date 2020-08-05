@@ -72,8 +72,18 @@ class ClientCreateHandler
 
         if ($id) {
             $this->setResponse([], 201);
-            (new ContactCreateHandler($this->contactRepository))
-                ->create($id, $this->boundery->getContacts());
+            $this->createContactsIfWereSent($id);
+        }
+    }
+
+    private function createContactsIfWereSent($clientId)
+    {
+        if ($this->boundery->getContacts()) {
+            $contactHandler = new ContactCreateHandler($this->contactRepository);
+
+            foreach ($this->boundery->getContacts() as $contact) {
+                $contactHandler->create($clientId, $contact);
+            }
         }
     }
 
