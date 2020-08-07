@@ -82,7 +82,7 @@ class ClientRepository implements
             $data['identifier'] = $row['identifier'];
             $data['id'] = $row['id'];
             $data['typePerson'] = $row['typePerson'];
-            $data['contact'][] = [
+            $data['contacts'][] = [
                 'type' => $row['type'],
                 'id' => $row['contactId'],
                 'contact' => $row['contact'],

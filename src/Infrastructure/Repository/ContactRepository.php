@@ -4,9 +4,13 @@ namespace SRC\Infrastructure\Repository;
 
 use SRC\Domain\Client\Interfaces\ContactCreateRepository;
 use SRC\Domain\Client\Interfaces\ContactDeleteRepository;
+use SRC\Domain\Client\Interfaces\ContactFindRepository;
 use SRC\Domain\Client\Interfaces\ContactUpdateRepository;
 
-class ContactRepository implements ContactCreateRepository, ContactUpdateRepository, ContactDeleteRepository
+class ContactRepository implements ContactCreateRepository,
+    ContactUpdateRepository,
+    ContactDeleteRepository,
+    ContactFindRepository
 {
     private $connection;
 
@@ -44,13 +48,10 @@ class ContactRepository implements ContactCreateRepository, ContactUpdateReposit
     public function findById($id): array
     {
         $stmt = $this->connection->prepare("SELECT
-                                                name,
-                                                id,
-                                                name,
-                                                type,
-                                                identifier
+                                                contact,
+                                                id
                                             FROM
-                                                client
+                                                contact
                                             WHERE
                                                 deleted_at IS NULL AND
                                                 id = ?");
@@ -82,5 +83,22 @@ class ContactRepository implements ContactCreateRepository, ContactUpdateReposit
         $stmt->bindValue(4, $clientId);
 
         return $stmt->execute() ? 1 : 0;
+    }
+
+    public function findByClientId($clientId): array
+    {
+        $stmt = $this->connection->prepare("SELECT
+                                                contact,
+                                                id,
+                                                type
+                                            FROM
+                                                contact
+                                            WHERE
+                                                deleted_at IS NULL AND
+                                                client_id = ?");
+        $stmt->bindValue(1, $clientId);
+        $stmt->execute();
+
+        return $stmt->execute() ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
     }
 }

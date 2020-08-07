@@ -1,5 +1,7 @@
 <?php
 
+use SRC\Domain\Client\Interfaces\ContactFindRepository;
+
 $clientRepository = new \SRC\Infrastructure\Repository\ClientRepository(
     (new \SRC\Infrastructure\Database\Connection())->getConnection()
 );
@@ -17,5 +19,6 @@ return [
     \SRC\Domain\Client\Interfaces\ContactCreateRepository::class => $contactRepository,
     \SRC\Domain\Client\Interfaces\ContactUpdateRepository::class => $contactRepository,
     \SRC\Domain\Client\Interfaces\ContactDeleteRepository::class => $contactRepository,
+    \SRC\Domain\Client\Interfaces\ContactFindRepository::class => $contactRepository,
     \SRC\Domain\Client\Interfaces\ClientValidator::class => new \SRC\Infrastructure\Validator\ClientValidator()
 ];
