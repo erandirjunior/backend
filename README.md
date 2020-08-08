@@ -1,19 +1,24 @@
 # backend
 
-## Requirements
-* Docker installed
+## Installation
 
-***This project must run before frontend project and must run in port 81***
+#### Requirements
+* [Docker](https://www.docker.com/)
+* Disable others services that be running in port 80
 
-## Clone this project
+***This project must run before frontend project and must run in port 80***
 
-## Run this command and then to go to frontend settings
+#### Run this command to up PHP project:
 ```
 docker-compose up
 ```
 
-## This project was built using:
-* Composer
-* PlugRoute
+#### Go to frontend project
+
+#### This project was built using:
+* Docker
+* [Composer](https://getcomposer.org/)
+* [PlugRoute](https://github.com/erandirjunior/plug-route) my route library for PHP
+* MySQL database
 * PDO
 * The structure was based in clean architecture
