@@ -3,7 +3,7 @@
 ## Requirements
 * Docker installed
 
-***This project must be run before frontend project and must run in port 81***
+***This project must run before frontend project and must run in port 81***
 
 ## Clone this project
 
