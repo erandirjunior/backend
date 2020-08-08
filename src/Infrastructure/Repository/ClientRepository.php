@@ -46,7 +46,7 @@ class ClientRepository implements
         $stmt = $this->connection->query("SELECT
                                             name,
                                             id,
-                                            type,
+                                            type as typePerson,
                                             identifier
                                         FROM
                                             client
@@ -77,16 +77,19 @@ class ClientRepository implements
         $stmt->execute();
         $data = [];
 
-        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $key => $row) {
             $data['name'] = $row['name'];
             $data['identifier'] = $row['identifier'];
             $data['id'] = $row['id'];
             $data['typePerson'] = $row['typePerson'];
-            $data['contacts'][] = [
-                'type' => $row['type'],
-                'id' => $row['contactId'],
-                'contact' => $row['contact'],
-            ];
+            $data['contacts'] = [];
+            if (!empty($row['type'])) {
+                $data['contacts'][] = [
+                    'type' => $row['type'],
+                    'id' => $row['contactId'],
+                    'contact' => $row['contact'],
+                ];
+            }
         }
 
         return $data;
