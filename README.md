@@ -18,7 +18,7 @@ docker-compose up
 #### This project was built using:
 * Docker
 * [Composer](https://getcomposer.org/)
-* [PlugRoute](https://github.com/erandirjunior/plug-route) my route library for PHP
+* [PlugRoute v3.9](https://github.com/erandirjunior/plug-route) my route library for PHP
 * MySQL database
 * PDO
 * The structure was based in clean architecture
